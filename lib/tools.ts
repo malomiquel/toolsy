@@ -5,13 +5,14 @@ import {
   Calendar,
   Clock,
   Percent,
+  type LucideIcon,
 } from "lucide-react";
 
 export interface Tool {
   id: string;
   title: string;
   description: string;
-  icon: any;
+  icon: LucideIcon;
   href: string;
   category: string;
   tags: string[];
@@ -89,6 +90,6 @@ export function searchTools(query: string): Tool[] {
     (tool) =>
       tool.title.toLowerCase().includes(lowercaseQuery) ||
       tool.description.toLowerCase().includes(lowercaseQuery) ||
-      tool.tags.some((tag) => tag.toLowerCase().includes(lowercaseQuery))
+      tool.tags.some((tag) => tag.toLowerCase().includes(lowercaseQuery)),
   );
 }
