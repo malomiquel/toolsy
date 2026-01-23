@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Fond avec dégradé moderne -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1d4ed8;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Rectangle avec coins arrondis pour fond -->
+  <rect width="512" height="512" rx="100" fill="url(#bgGradient)"/>
+
+  <!-- Texte "Toolsy" centré -->
+  <text
+    x="256"
+    y="290"
+    font-family="Inter, system-ui, sans-serif"
+    font-size="96"
+    font-weight="700"
+    fill="#ffffff"
+    text-anchor="middle"
+    dominant-baseline="middle"
+  >Toolsy</text>
+
+  <!-- Petit symbole outil (clé à molette stylisée) au-dessus -->
+  <g transform="translate(256, 150)">
+    <path
+      d="M -30,-20 L -30,20 L -20,20 L -20,0 L 20,0 L 20,-10 L 30,-10 L 30,-20 L 20,-20 L 20,-30 L 10,-30 L 10,-20 L -20,-20 Z"
+      fill="#ffffff"
+      opacity="0.9"
+    />
+  </g>
+</svg>

@@ -130,7 +130,7 @@ export function SalaryCalculator() {
 
             <div className="space-y-2">
               <Label htmlFor="period">Période</Label>
-              <Select value={period} onValueChange={(value: Period) => setPeriod(value)}>
+              <Select value={period} onValueChange={(value) => value && setPeriod(value as Period)}>
                 <SelectTrigger id="period">
                   <SelectValue />
                 </SelectTrigger>
@@ -146,7 +146,7 @@ export function SalaryCalculator() {
 
             <div className="space-y-2">
               <Label htmlFor="status">Statut</Label>
-              <Select value={status} onValueChange={(value: EmployeeStatus) => setStatus(value)}>
+              <Select value={status} onValueChange={(value) => value && setStatus(value as EmployeeStatus)}>
                 <SelectTrigger id="status">
                   <SelectValue />
                 </SelectTrigger>
@@ -189,7 +189,7 @@ export function SalaryCalculator() {
 
             <div className="space-y-2">
               <Label htmlFor="bonus-months">Nombre de mois de prime</Label>
-              <Select value={bonusMonths.toString()} onValueChange={(value) => setBonusMonths(parseInt(value))}>
+              <Select value={bonusMonths.toString()} onValueChange={(value) => value && setBonusMonths(parseInt(value))}>
                 <SelectTrigger id="bonus-months">
                   <SelectValue />
                 </SelectTrigger>
