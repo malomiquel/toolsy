@@ -1,5 +1,5 @@
-import { ComponentExample } from "@/components/component-example";
+import { ToolsGrid } from "@/components/tools-grid";
 
-export default function Page() {
-return <ComponentExample />;
+export default function HomePage() {
+  return <ToolsGrid />;
 }
