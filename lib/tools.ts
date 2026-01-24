@@ -1,10 +1,8 @@
 import {
   Calculator,
-  DollarSign,
-  FileText,
-  Calendar,
-  Clock,
+  Wallet,
   Percent,
+  Home,
   type LucideIcon,
 } from "lucide-react";
 
@@ -19,15 +17,16 @@ export interface Tool {
 }
 
 export const tools: Tool[] = [
+  // Finance
   {
     id: "salary-calculator",
     title: "Salaire Brut en Net",
     description:
-      "Calculez votre salaire net à partir du brut avec prise en compte du prélèvement à la source",
+      "Calculez votre salaire net à partir du brut avec prise en compte des charges",
     icon: Calculator,
     href: "/tools/salary-calculator",
     category: "Finance",
-    tags: ["salaire", "brut", "net", "impôts", "finance", "paie"],
+    tags: ["salaire", "brut", "net", "impôts", "paie"],
   },
   {
     id: "vat-calculator",
@@ -36,43 +35,28 @@ export const tools: Tool[] = [
     icon: Percent,
     href: "/tools/vat-calculator",
     category: "Finance",
-    tags: ["tva", "taxe", "ht", "ttc", "finance"],
+    tags: ["tva", "taxe", "ht", "ttc"],
   },
   {
-    id: "expense-tracker",
-    title: "Suivi des dépenses",
-    description: "Suivez et catégorisez vos dépenses mensuelles",
-    icon: DollarSign,
-    href: "/tools/expense-tracker",
+    id: "living-budget-calculator",
+    title: "Budget Familial",
+    description:
+      "Gérez vos revenus et dépenses pour optimiser votre épargne mensuelle",
+    icon: Wallet,
+    href: "/tools/living-budget",
     category: "Finance",
-    tags: ["dépenses", "budget", "finance", "économies"],
+    tags: ["budget", "dépenses", "épargne", "famille"],
   },
+  // Immobilier
   {
-    id: "invoice-generator",
-    title: "Générateur de factures",
-    description: "Créez des factures professionnelles en quelques clics",
-    icon: FileText,
-    href: "/tools/invoice-generator",
-    category: "Productivité",
-    tags: ["facture", "professionnel", "freelance", "entreprise"],
-  },
-  {
-    id: "time-tracker",
-    title: "Suivi du temps",
-    description: "Suivez le temps passé sur vos différents projets",
-    icon: Clock,
-    href: "/tools/time-tracker",
-    category: "Productivité",
-    tags: ["temps", "productivité", "projet", "freelance"],
-  },
-  {
-    id: "leave-calculator",
-    title: "Calcul des congés",
-    description: "Calculez vos jours de congés payés et RTT",
-    icon: Calendar,
-    href: "/tools/leave-calculator",
-    category: "RH",
-    tags: ["congés", "rtt", "vacances", "travail"],
+    id: "mortgage-calculator",
+    title: "Simulateur de Crédit Immobilier",
+    description:
+      "Calculez vos mensualités, le coût total et les intérêts de votre emprunt",
+    icon: Home,
+    href: "/tools/mortgage-calculator",
+    category: "Immobilier",
+    tags: ["crédit", "emprunt", "immobilier", "mensualité", "taux"],
   },
 ];
 
@@ -90,6 +74,6 @@ export function searchTools(query: string): Tool[] {
     (tool) =>
       tool.title.toLowerCase().includes(lowercaseQuery) ||
       tool.description.toLowerCase().includes(lowercaseQuery) ||
-      tool.tags.some((tag) => tag.toLowerCase().includes(lowercaseQuery)),
+      tool.tags.some((tag) => tag.toLowerCase().includes(lowercaseQuery))
   );
 }

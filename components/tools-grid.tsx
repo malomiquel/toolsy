@@ -2,8 +2,18 @@
 
 import { useState, useMemo } from "react";
 import { tools, searchTools } from "@/lib/tools";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Search } from "lucide-react";
 import Link from "next/link";
@@ -18,7 +28,7 @@ export function ToolsGrid() {
 
   const categories = useMemo(() => {
     const cats = new Set(tools.map((tool) => tool.category));
-    return Array.from(cats);
+    return [...cats];
   }, []);
 
   const groupedTools = useMemo(() => {
@@ -43,23 +53,25 @@ export function ToolsGrid() {
 
         {/* Search */}
         <div className="mb-12">
-          <div className="relative mx-auto max-w-2xl">
-            <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
-            <Input
+          <InputGroup className="mx-auto max-w-2xl h-12">
+            <InputGroupAddon>
+              <Search className="size-5" />
+            </InputGroupAddon>
+            <InputGroupInput
               type="search"
-              placeholder="Rechercher un outil... (salaire, tva, facture...)"
-              className="pl-10 h-12 text-base"
+              placeholder="Rechercher un outil... (salaire, crédit, budget...)"
+              className="text-base"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-          </div>
+          </InputGroup>
         </div>
 
         {/* Tools Grid by Category */}
         {filteredTools.length === 0 ? (
           <div className="text-center py-12">
             <p className="text-muted-foreground text-lg">
-              Aucun outil trouvé pour "{searchQuery}"
+              Aucun outil trouvé pour &quot;{searchQuery}&quot;
             </p>
           </div>
         ) : (

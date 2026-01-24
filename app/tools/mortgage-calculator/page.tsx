@@ -1,9 +1,9 @@
 import { Suspense } from "react";
-import { SalaryCalculator } from "@/components/salary-calculator";
+import { MortgageCalculator } from "@/components/mortgage/mortgage-calculator";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-export default function SalaryCalculatorPage() {
+export default function MortgageCalculatorPage() {
   return (
     <div className="h-screen bg-neutral-50 flex flex-col overflow-hidden">
       <header className="shrink-0 px-6 py-4 flex items-center gap-6 border-b border-neutral-200 bg-white">
@@ -15,17 +15,17 @@ export default function SalaryCalculatorPage() {
         </Link>
         <div>
           <h1 className="text-lg font-semibold text-neutral-900">
-            Salaire Brut → Net
+            Simulateur de Crédit Immobilier
           </h1>
           <p className="text-sm text-neutral-500">
-            Estimez votre salaire net après charges et impôts
+            Calculez vos mensualités et le coût total de votre emprunt
           </p>
         </div>
       </header>
 
       <main className="flex-1 min-h-0 p-6">
         <Suspense fallback={<div className="h-full flex items-center justify-center text-neutral-400">Chargement...</div>}>
-          <SalaryCalculator />
+          <MortgageCalculator />
         </Suspense>
       </main>
     </div>

@@ -7,8 +7,8 @@
  * Usage: node scripts/generate-placeholder-icons.js
  */
 
-const fs = require('fs');
-const path = require('path');
+const fs = require('node:fs');
+const path = require('node:path');
 
 // Dimensions requises pour les icônes
 const sizes = [
@@ -35,19 +35,19 @@ const transparentPNG = Buffer.from(
 
 console.log('🎨 Génération des icônes placeholder...\n');
 
-sizes.forEach(({ width, height, name }) => {
+for (const { width, height, name } of sizes) {
   const filepath = path.join(iconsDir, name);
 
   // Ne pas écraser si le fichier existe déjà
   if (fs.existsSync(filepath)) {
     console.log(`⏭️  ${name} existe déjà, ignoré`);
-    return;
+    continue;
   }
 
   // Écrire le PNG transparent
   fs.writeFileSync(filepath, transparentPNG);
   console.log(`✅ ${name} créé (${width}x${height}px)`);
-});
+}
 
 console.log('\n⚠️  IMPORTANT:');
 console.log('Ces icônes sont des placeholders transparents 1x1.');

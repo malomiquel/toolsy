@@ -3,7 +3,6 @@ import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
 import pluginReact from "eslint-plugin-react";
 import eslintPluginUnicorn from "eslint-plugin-unicorn";
-import tailwind from "eslint-plugin-tailwindcss";
 
 /** @type {import('eslint').Linter.Config[]} */
 const config = [
@@ -23,7 +22,6 @@ const config = [
   ...tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
   eslintPluginUnicorn.configs.recommended,
-  ...tailwind.configs["flat/recommended"],
   {
     settings: {
       react: {
@@ -39,8 +37,6 @@ const config = [
       "no-undef": "off",
       "unicorn/no-single-promise-in-promise-methods": "off",
       "react/react-in-jsx-scope": "off",
-      "tailwindcss/no-custom-classname": "off",
-      "tailwindcss/enforces-negative-arbitrary-values": "off",
       "react-hooks/rules-of-hooks": "off",
       "unicorn/no-document-cookie": "off",
       "unicorn/explicit-length-check": "off",
