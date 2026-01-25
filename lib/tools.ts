@@ -4,6 +4,7 @@ import {
   Percent,
   Home,
   Ruler,
+  KeyRound,
   type LucideIcon,
 } from "lucide-react";
 
@@ -69,6 +70,17 @@ export const tools: Tool[] = [
     href: "/tools/size-converter",
     category: "Quotidien",
     tags: ["taille", "vêtements", "chaussures", "conversion", "eu", "uk", "us"],
+  },
+  // Sécurité
+  {
+    id: "password-generator",
+    title: "Générateur de Mot de Passe",
+    description:
+      "Créez des mots de passe sécurisés avec options de personnalisation",
+    icon: KeyRound,
+    href: "/tools/password-generator",
+    category: "Sécurité",
+    tags: ["mot de passe", "password", "sécurité", "générateur"],
   },
 ];
 

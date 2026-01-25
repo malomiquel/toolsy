@@ -17,7 +17,7 @@ export function DebtRatioIndicator({
 
   const totalDebt = monthlyPayment + existingLoans;
   const debtRatio = (totalDebt / monthlyIncome) * 100;
-  const maxRecommended = 35;
+  const _maxRecommended = 35;
 
   const getStatus = () => {
     if (debtRatio <= 30) return "good";
