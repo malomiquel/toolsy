@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { tools } from "@/lib/tools";
+import { useState, useMemo, useCallback, memo } from "react";
+import { tools, type Tool } from "@/lib/tools";
 import {
   Card,
   CardContent,
@@ -13,6 +13,54 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SearchCommand } from "@/components/search-command";
 import Link from "next/link";
+
+// Memoized ToolCard component to prevent unnecessary re-renders
+const ToolCard = memo(function ToolCard({ tool }: { tool: Tool }) {
+  const Icon = tool.icon;
+  return (
+    <Link href={tool.href} className="group">
+      <Card className="h-full transition-all hover:shadow-md hover:border-primary/50 hover:-translate-y-0.5">
+        <CardHeader className="pb-2">
+          <div className="rounded-lg bg-primary/10 p-2.5 w-fit mb-3">
+            <Icon className="h-5 w-5 text-primary" />
+          </div>
+          <CardTitle className="text-base leading-tight group-hover:text-primary transition-colors">
+            {tool.title}
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-0">
+          <CardDescription className="line-clamp-2 text-sm">
+            {tool.description}
+          </CardDescription>
+        </CardContent>
+      </Card>
+    </Link>
+  );
+});
+
+// Memoized CategoryButton to prevent re-renders
+const CategoryButton = memo(function CategoryButton({
+  name,
+  count,
+  isSelected,
+  onClick,
+}: {
+  name: string | null;
+  count: number;
+  isSelected: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <Button
+      variant={isSelected ? "default" : "outline"}
+      size="sm"
+      onClick={onClick}
+      className="rounded-full"
+    >
+      {name ?? "Tous"} ({count})
+    </Button>
+  );
+});
 
 export function ToolsGrid() {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -43,6 +91,15 @@ export function ToolsGrid() {
     return groups;
   }, [filteredTools]);
 
+  // Memoized callbacks
+  const handleClearFilter = useCallback(() => {
+    setSelectedCategory(null);
+  }, []);
+
+  const handleSelectCategory = useCallback((name: string) => {
+    setSelectedCategory(name);
+  }, []);
+
   return (
     <div className="min-h-screen bg-linear-to-b from-background to-muted/20">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -63,24 +120,20 @@ export function ToolsGrid() {
 
         {/* Category filters */}
         <div className="mb-8 flex flex-wrap justify-center gap-2">
-          <Button
-            variant={selectedCategory === null ? "default" : "outline"}
-            size="sm"
-            onClick={() => setSelectedCategory(null)}
-            className="rounded-full"
-          >
-            Tous ({tools.length})
-          </Button>
+          <CategoryButton
+            name={null}
+            count={tools.length}
+            isSelected={selectedCategory === null}
+            onClick={handleClearFilter}
+          />
           {categories.map(({ name, count }) => (
-            <Button
+            <CategoryButton
               key={name}
-              variant={selectedCategory === name ? "default" : "outline"}
-              size="sm"
-              onClick={() => setSelectedCategory(name)}
-              className="rounded-full"
-            >
-              {name} ({count})
-            </Button>
+              name={name}
+              count={count}
+              isSelected={selectedCategory === name}
+              onClick={() => handleSelectCategory(name)}
+            />
           ))}
         </div>
 
@@ -93,7 +146,7 @@ export function ToolsGrid() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => setSelectedCategory(null)}
+              onClick={handleClearFilter}
               className="h-auto py-1 px-2 text-xs"
             >
               Voir tous
@@ -112,28 +165,9 @@ export function ToolsGrid() {
                 </Badge>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {categoryTools.map((tool) => {
-                  const Icon = tool.icon;
-                  return (
-                    <Link key={tool.id} href={tool.href} className="group">
-                      <Card className="h-full transition-all hover:shadow-md hover:border-primary/50 hover:-translate-y-0.5">
-                        <CardHeader className="pb-2">
-                          <div className="rounded-lg bg-primary/10 p-2.5 w-fit mb-3">
-                            <Icon className="h-5 w-5 text-primary" />
-                          </div>
-                          <CardTitle className="text-base leading-tight group-hover:text-primary transition-colors">
-                            {tool.title}
-                          </CardTitle>
-                        </CardHeader>
-                        <CardContent className="pt-0">
-                          <CardDescription className="line-clamp-2 text-sm">
-                            {tool.description}
-                          </CardDescription>
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  );
-                })}
+                {categoryTools.map((tool) => (
+                  <ToolCard key={tool.id} tool={tool} />
+                ))}
               </div>
             </section>
           ))}

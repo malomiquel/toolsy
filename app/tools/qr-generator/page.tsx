@@ -1,4 +1,9 @@
-import { ToolLayout, QrGenerator } from "@/components/tools";
+import dynamic from "next/dynamic";
+import { ToolLayout } from "@/components/tools/tool-layout";
+
+const QrGenerator = dynamic(() =>
+  import("@/components/tools/qr-generator").then((mod) => mod.QrGenerator)
+);
 
 export default function QrGeneratorPage() {
   return (

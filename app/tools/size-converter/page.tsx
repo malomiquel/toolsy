@@ -1,4 +1,9 @@
-import { ToolLayout, SizeConverter } from "@/components/tools";
+import dynamic from "next/dynamic";
+import { ToolLayout } from "@/components/tools/tool-layout";
+
+const SizeConverter = dynamic(() =>
+  import("@/components/tools/size-converter").then((mod) => mod.SizeConverter)
+);
 
 export default function SizeConverterPage() {
   return (

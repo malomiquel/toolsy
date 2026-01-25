@@ -1,4 +1,9 @@
-import { ToolLayout, FamilyBudgetPlanner } from "@/components/tools";
+import dynamic from "next/dynamic";
+import { ToolLayout } from "@/components/tools/tool-layout";
+
+const FamilyBudgetPlanner = dynamic(() =>
+  import("@/components/tools/living-budget-calculator").then((mod) => mod.FamilyBudgetPlanner)
+);
 
 export default function LivingBudgetPage() {
   return (

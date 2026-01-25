@@ -1,4 +1,9 @@
-import { ToolLayout, VatCalculator } from "@/components/tools";
+import dynamic from "next/dynamic";
+import { ToolLayout } from "@/components/tools/tool-layout";
+
+const VatCalculator = dynamic(() =>
+  import("@/components/tools/vat-calculator").then((mod) => mod.VatCalculator)
+);
 
 export default function VatCalculatorPage() {
   return (

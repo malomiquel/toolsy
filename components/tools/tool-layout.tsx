@@ -1,5 +1,3 @@
-"use client";
-
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
@@ -10,6 +8,7 @@ interface ToolLayoutProps {
   children: ReactNode;
 }
 
+// Server Component - no "use client" needed
 export function ToolLayout({ title, description, children }: ToolLayoutProps) {
   return (
     <div className="h-screen bg-neutral-50 flex flex-col overflow-hidden">

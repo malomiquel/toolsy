@@ -1,4 +1,9 @@
-import { ToolLayout, MortgageCalculator } from "@/components/tools";
+import dynamic from "next/dynamic";
+import { ToolLayout } from "@/components/tools/tool-layout";
+
+const MortgageCalculator = dynamic(() =>
+  import("@/components/tools/mortgage/mortgage-calculator").then((mod) => mod.MortgageCalculator)
+);
 
 export default function MortgageCalculatorPage() {
   return (

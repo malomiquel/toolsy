@@ -8,6 +8,7 @@ import {
   Scale,
   QrCode,
   Palette,
+  Cake,
   type LucideIcon,
 } from "lucide-react";
 
@@ -114,6 +115,16 @@ export const tools: Tool[] = [
     href: "/tools/bmi-calculator",
     category: "Santé",
     tags: ["imc", "poids", "taille", "santé", "masse corporelle"],
+  },
+  {
+    id: "age-calculator",
+    title: "Calculateur d'Âge",
+    description:
+      "Découvrez votre âge précis en temps réel avec des statistiques fun",
+    icon: Cake,
+    href: "/tools/age-calculator",
+    category: "Santé",
+    tags: ["âge", "anniversaire", "naissance", "temps", "statistiques"],
   },
 ];
 
