@@ -5,6 +5,8 @@ import {
   Home,
   Ruler,
   KeyRound,
+  Scale,
+  QrCode,
   type LucideIcon,
 } from "lucide-react";
 
@@ -81,6 +83,28 @@ export const tools: Tool[] = [
     href: "/tools/password-generator",
     category: "Sécurité",
     tags: ["mot de passe", "password", "sécurité", "générateur"],
+  },
+  // Santé
+  {
+    id: "bmi-calculator",
+    title: "Calculateur d'IMC",
+    description:
+      "Calculez votre Indice de Masse Corporelle et découvrez votre poids idéal",
+    icon: Scale,
+    href: "/tools/bmi-calculator",
+    category: "Santé",
+    tags: ["imc", "poids", "taille", "santé", "masse corporelle"],
+  },
+  // Utilitaires
+  {
+    id: "qr-generator",
+    title: "Générateur de QR Code",
+    description:
+      "Créez des QR codes pour texte, URL, email, téléphone ou WiFi",
+    icon: QrCode,
+    href: "/tools/qr-generator",
+    category: "Utilitaires",
+    tags: ["qr code", "qrcode", "lien", "url", "wifi"],
   },
 ];
 
