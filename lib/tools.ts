@@ -3,6 +3,7 @@ import {
   Wallet,
   Percent,
   Home,
+  Ruler,
   type LucideIcon,
 } from "lucide-react";
 
@@ -57,6 +58,17 @@ export const tools: Tool[] = [
     href: "/tools/mortgage-calculator",
     category: "Immobilier",
     tags: ["crédit", "emprunt", "immobilier", "mensualité", "taux"],
+  },
+  // Quotidien
+  {
+    id: "size-converter",
+    title: "Convertisseur de Tailles",
+    description:
+      "Convertissez les tailles de vêtements et chaussures entre EU, UK et US",
+    icon: Ruler,
+    href: "/tools/size-converter",
+    category: "Quotidien",
+    tags: ["taille", "vêtements", "chaussures", "conversion", "eu", "uk", "us"],
   },
 ];
 

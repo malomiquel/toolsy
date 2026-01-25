@@ -189,7 +189,9 @@ export function SalaryCalculator() {
                 onValueChange={(v) => setParams({ status: v as EmployeeStatus })}
               >
                 <SelectTrigger className="mt-1.5 h-10 border-neutral-200">
-                  <SelectValue />
+                  <SelectValue>
+                    {STATUS_OPTIONS.find((s) => s.value === status)?.label}
+                  </SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {STATUS_OPTIONS.map((s) => (
@@ -210,7 +212,7 @@ export function SalaryCalculator() {
                 onValueChange={(v) => v && setParams({ time: +v })}
               >
                 <SelectTrigger className="mt-1.5 h-10 border-neutral-200">
-                  <SelectValue />
+                  <SelectValue>{workTime}%</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {[50, 60, 70, 80, 90, 100].map((v) => (

@@ -90,7 +90,7 @@ export function VatCalculator() {
               </Label>
               <Select value={mode} onValueChange={(v) => setParams({ mode: v as Mode })}>
                 <SelectTrigger className="mt-1.5 h-10 border-neutral-200">
-                  <SelectValue />
+                  <SelectValue>{mode.toUpperCase()}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="ht">HT</SelectItem>
@@ -108,7 +108,7 @@ export function VatCalculator() {
                 onValueChange={(v) => v && setParams({ rate: +v })}
               >
                 <SelectTrigger className="mt-1.5 h-10 border-neutral-200">
-                  <SelectValue />
+                  <SelectValue>{rate}%</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {TVA_RATES.map((r) => (
