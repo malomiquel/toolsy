@@ -16,8 +16,8 @@ import {
   calculateTotalIncome,
   calculateExistingLoans,
   type IncomeData,
-} from "@/components/mortgage/income-section";
-import { DebtRatioIndicator } from "@/components/mortgage/debt-ratio-indicator";
+} from "./income-section";
+import { DebtRatioIndicator } from "./debt-ratio-indicator";
 
 interface MortgageResult {
   monthlyPayment: number;
