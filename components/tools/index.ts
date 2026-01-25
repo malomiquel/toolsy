@@ -10,3 +10,4 @@ export { PasswordGenerator } from "./password-generator";
 export { BmiCalculator } from "./bmi-calculator";
 export { QrGenerator } from "./qr-generator";
 export { MortgageCalculator } from "./mortgage/mortgage-calculator";
+export { ColorConverter } from "./color-converter";

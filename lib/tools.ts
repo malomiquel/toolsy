@@ -7,6 +7,7 @@ import {
   KeyRound,
   Scale,
   QrCode,
+  Palette,
   type LucideIcon,
 } from "lucide-react";
 
@@ -51,7 +52,6 @@ export const tools: Tool[] = [
     category: "Finance",
     tags: ["budget", "dépenses", "épargne", "famille"],
   },
-  // Immobilier
   {
     id: "mortgage-calculator",
     title: "Simulateur de Crédit Immobilier",
@@ -59,10 +59,10 @@ export const tools: Tool[] = [
       "Calculez vos mensualités, le coût total et les intérêts de votre emprunt",
     icon: Home,
     href: "/tools/mortgage-calculator",
-    category: "Immobilier",
+    category: "Finance",
     tags: ["crédit", "emprunt", "immobilier", "mensualité", "taux"],
   },
-  // Quotidien
+  // Convertisseurs
   {
     id: "size-converter",
     title: "Convertisseur de Tailles",
@@ -70,10 +70,20 @@ export const tools: Tool[] = [
       "Convertissez les tailles de vêtements et chaussures entre EU, UK et US",
     icon: Ruler,
     href: "/tools/size-converter",
-    category: "Quotidien",
+    category: "Convertisseurs",
     tags: ["taille", "vêtements", "chaussures", "conversion", "eu", "uk", "us"],
   },
-  // Sécurité
+  {
+    id: "color-converter",
+    title: "Convertisseur de Couleurs",
+    description:
+      "Convertissez facilement entre HEX, RGB et HSL avec aperçu en temps réel",
+    icon: Palette,
+    href: "/tools/color-converter",
+    category: "Convertisseurs",
+    tags: ["couleur", "hex", "rgb", "hsl", "css", "design"],
+  },
+  // Générateurs
   {
     id: "password-generator",
     title: "Générateur de Mot de Passe",
@@ -81,8 +91,18 @@ export const tools: Tool[] = [
       "Créez des mots de passe sécurisés avec options de personnalisation",
     icon: KeyRound,
     href: "/tools/password-generator",
-    category: "Sécurité",
+    category: "Générateurs",
     tags: ["mot de passe", "password", "sécurité", "générateur"],
+  },
+  {
+    id: "qr-generator",
+    title: "Générateur de QR Code",
+    description:
+      "Créez des QR codes pour texte, URL, email, téléphone ou WiFi",
+    icon: QrCode,
+    href: "/tools/qr-generator",
+    category: "Générateurs",
+    tags: ["qr code", "qrcode", "lien", "url", "wifi"],
   },
   // Santé
   {
@@ -94,17 +114,6 @@ export const tools: Tool[] = [
     href: "/tools/bmi-calculator",
     category: "Santé",
     tags: ["imc", "poids", "taille", "santé", "masse corporelle"],
-  },
-  // Utilitaires
-  {
-    id: "qr-generator",
-    title: "Générateur de QR Code",
-    description:
-      "Créez des QR codes pour texte, URL, email, téléphone ou WiFi",
-    icon: QrCode,
-    href: "/tools/qr-generator",
-    category: "Utilitaires",
-    tags: ["qr code", "qrcode", "lien", "url", "wifi"],
   },
 ];
 
