@@ -9,6 +9,7 @@ import {
   QrCode,
   Palette,
   Cake,
+  FileStack,
   type LucideIcon,
 } from "lucide-react";
 
@@ -104,6 +105,17 @@ export const tools: Tool[] = [
     href: "/tools/qr-generator",
     category: "Générateurs",
     tags: ["qr code", "qrcode", "lien", "url", "wifi"],
+  },
+  // Documents
+  {
+    id: "pdf-manager",
+    title: "Gestionnaire d'Images et PDF",
+    description:
+      "Créez des cartes à découper, compressez vos images et fusionnez vos documents en quelques clics",
+    icon: FileStack,
+    href: "/tools/pdf-manager",
+    category: "Documents",
+    tags: ["image", "pdf", "carte", "impression", "découpe", "compression", "fusion"],
   },
   // Santé
   {

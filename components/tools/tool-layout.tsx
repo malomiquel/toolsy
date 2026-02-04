@@ -6,15 +6,21 @@ interface ToolLayoutProps {
   title: string;
   description: string;
   children: ReactNode;
+  backHref?: string;
 }
 
 // Server Component - no "use client" needed
-export function ToolLayout({ title, description, children }: ToolLayoutProps) {
+export function ToolLayout({
+  title,
+  description,
+  children,
+  backHref = "/",
+}: ToolLayoutProps) {
   return (
     <div className="h-screen bg-neutral-50 flex flex-col overflow-hidden">
       <header className="shrink-0 px-6 py-4 flex items-center gap-6 border-b border-neutral-200 bg-white">
         <Link
-          href="/"
+          href={backHref}
           className="flex items-center justify-center w-8 h-8 rounded-full bg-neutral-100 hover:bg-neutral-200 transition-colors"
         >
           <ArrowLeft className="w-4 h-4 text-neutral-600" strokeWidth={1.5} />
