@@ -10,6 +10,7 @@ import {
   Palette,
   Cake,
   FileStack,
+  PartyPopper,
   type LucideIcon,
 } from "lucide-react";
 
@@ -63,6 +64,16 @@ export const tools: Tool[] = [
     href: "/tools/mortgage-calculator",
     category: "Finance",
     tags: ["crédit", "emprunt", "immobilier", "mensualité", "taux"],
+  },
+  {
+    id: "event-budget",
+    title: "Budget Événement",
+    description:
+      "Planifiez les recettes et dépenses de votre événement pour maîtriser votre budget",
+    icon: PartyPopper,
+    href: "/tools/event-budget",
+    category: "Événementiel",
+    tags: ["événement", "budget", "recettes", "dépenses", "fête", "organisation"],
   },
   // Convertisseurs
   {
