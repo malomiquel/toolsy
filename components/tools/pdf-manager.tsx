@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { Scissors, FilePlus, FileImage, ArrowRight } from "lucide-react";
+import { Scissors, FilePlus, FileImage, ArrowRight, ZoomIn } from "lucide-react";
 
 const FEATURES = [
   {
@@ -21,6 +21,15 @@ const FEATURES = [
       "Combinez plusieurs fichiers PDF en un seul document. Idéal pour organiser vos documents.",
     icon: FilePlus,
     href: "/tools/pdf-manager/merge",
+    available: true,
+  },
+  {
+    id: "upscale",
+    title: "Agrandir une Image",
+    description:
+      "Augmentez la résolution de vos images (2x, 3x, 4x). Idéal pour améliorer la qualité d'impression.",
+    icon: ZoomIn,
+    href: "/tools/pdf-manager/upscale",
     available: true,
   },
   {
