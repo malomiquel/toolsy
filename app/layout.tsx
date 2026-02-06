@@ -2,9 +2,10 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { DesktopOnly } from "@/components/mobile-warning";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
-const inter = Inter({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,7 +19,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Toolsy - Boîte à outils française",
-  description: "Outils pratiques pour simplifier votre quotidien : calculateurs, générateurs et plus encore",
+  description:
+    "Outils pratiques pour simplifier votre quotidien : calculateurs, générateurs et plus encore",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -31,7 +33,11 @@ export const metadata: Metadata = {
       { url: "/icons/icon-512x512.png", sizes: "512x512", type: "image/png" },
     ],
     apple: [
-      { url: "/icons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+      {
+        url: "/icons/apple-touch-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
     ],
   },
 };
@@ -56,6 +62,7 @@ export default function RootLayout({
       >
         <NuqsAdapter>
           <DesktopOnly>{children}</DesktopOnly>
+          <Analytics />
         </NuqsAdapter>
       </body>
     </html>
