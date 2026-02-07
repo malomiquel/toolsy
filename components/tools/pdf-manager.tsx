@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
-import { Scissors, FilePlus, FileImage, ArrowRight, ZoomIn } from "lucide-react";
+import { Scissors, FilePlus, FileImage, ArrowRight, ZoomIn, BookOpen } from "lucide-react";
 
 const FEATURES = [
   {
@@ -30,6 +30,15 @@ const FEATURES = [
       "Augmentez la résolution de vos images (2x, 3x, 4x). Idéal pour améliorer la qualité d'impression.",
     icon: ZoomIn,
     href: "/tools/pdf-manager/upscale",
+    available: true,
+  },
+  {
+    id: "booklet",
+    title: "Livret / Carnet",
+    description:
+      "Réorganisez les pages d'un PDF pour l'imprimer en recto-verso et le plier en livret.",
+    icon: BookOpen,
+    href: "/tools/pdf-manager/booklet",
     available: true,
   },
   {
