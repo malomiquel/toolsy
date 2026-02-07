@@ -34,7 +34,11 @@ import {
   Check,
   PieChartIcon,
   Percent,
+  FileSpreadsheet,
+  FileText,
 } from "lucide-react";
+import * as XLSX from "xlsx";
+import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import {
   DEFAULT_EXPENSES,
@@ -64,7 +68,8 @@ export function EventBudget() {
 
   // Convert HT to TTC for items marked as HT
   const toTTC = useCallback(
-    (amount: number, isHT?: boolean) => (isHT ? amount * (1 + vatRate / 100) : amount),
+    (amount: number, isHT?: boolean) =>
+      isHT ? amount * (1 + vatRate / 100) : amount,
     [vatRate],
   );
 
@@ -333,7 +338,10 @@ export function EventBudget() {
     }, 0);
     const variableCostPerPerson = expenses.reduce(
       (sum, e) =>
-        sum + (e.perPerson && e.personCount === undefined ? toTTC(e.amount, e.isHT) : 0),
+        sum +
+        (e.perPerson && e.personCount === undefined
+          ? toTTC(e.amount, e.isHT)
+          : 0),
       0,
     );
     const totalExpenses = fixedExpenses + variableExpenses;
@@ -398,6 +406,261 @@ export function EventBudget() {
     [],
   );
 
+  // Export Excel avec formules
+  const exportToExcel = useCallback(() => {
+    const wb = XLSX.utils.book_new();
+
+    // Feuille Billetterie
+    const ticketsData = [
+      ["BILLETTERIE"],
+      ["Nom", "Prix unitaire", "Quantité", "Capacité max", "Total"],
+      ...tickets.map((t, i) => [
+        t.name || `Billet ${i + 1}`,
+        t.price,
+        t.quantity,
+        t.maxQuantity || "",
+        { f: `B${i + 3}*C${i + 3}` },
+      ]),
+      [],
+      [
+        "Total Billetterie",
+        "",
+        "",
+        "",
+        { f: `SUM(E3:E${tickets.length + 2})` },
+      ],
+      ["Total Participants", "", { f: `SUM(C3:C${tickets.length + 2})` }],
+    ];
+    const wsTickets = XLSX.utils.aoa_to_sheet(ticketsData);
+    wsTickets["!cols"] = [
+      { wch: 20 },
+      { wch: 15 },
+      { wch: 12 },
+      { wch: 15 },
+      { wch: 15 },
+    ];
+    XLSX.utils.book_append_sheet(wb, wsTickets, "Billetterie");
+
+    // Feuille Recettes
+    const revenuesData = [
+      ["AUTRES RECETTES"],
+      ["Libellé", "Montant", "Par pers.", "Nb pers.", "HT/TTC", "Total TTC"],
+      ...revenues.map((r, i) => {
+        const row = i + 3;
+        const effectiveCount = r.personCount ?? stats.totalAttendees;
+        return [
+          r.label,
+          r.amount,
+          r.perPerson ? "Oui" : "Non",
+          r.perPerson ? effectiveCount : "",
+          r.isHT ? "HT" : "TTC",
+          r.perPerson
+            ? {
+                f: r.isHT
+                  ? `B${row}*D${row}*(1+${vatRate}/100)`
+                  : `B${row}*D${row}`,
+              }
+            : { f: r.isHT ? `B${row}*(1+${vatRate}/100)` : `B${row}` },
+        ];
+      }),
+      [],
+      [
+        "Total Recettes",
+        "",
+        "",
+        "",
+        "",
+        { f: `SUM(F3:F${revenues.length + 2})` },
+      ],
+    ];
+    const wsRevenues = XLSX.utils.aoa_to_sheet(revenuesData);
+    wsRevenues["!cols"] = [
+      { wch: 25 },
+      { wch: 12 },
+      { wch: 10 },
+      { wch: 10 },
+      { wch: 10 },
+      { wch: 15 },
+    ];
+    XLSX.utils.book_append_sheet(wb, wsRevenues, "Recettes");
+
+    // Feuille Dépenses
+    const expensesData = [
+      ["DÉPENSES"],
+      ["Libellé", "Montant", "Par pers.", "Nb pers.", "HT/TTC", "Total TTC"],
+      ...expenses.map((e, i) => {
+        const row = i + 3;
+        const effectiveCount = e.personCount ?? stats.totalAttendees;
+        return [
+          e.label,
+          e.amount,
+          e.perPerson ? "Oui" : "Non",
+          e.perPerson ? effectiveCount : "",
+          e.isHT ? "HT" : "TTC",
+          e.perPerson
+            ? {
+                f: e.isHT
+                  ? `B${row}*D${row}*(1+${vatRate}/100)`
+                  : `B${row}*D${row}`,
+              }
+            : { f: e.isHT ? `B${row}*(1+${vatRate}/100)` : `B${row}` },
+        ];
+      }),
+      [],
+      [
+        "Total Dépenses",
+        "",
+        "",
+        "",
+        "",
+        { f: `SUM(F3:F${expenses.length + 2})` },
+      ],
+    ];
+    const wsExpenses = XLSX.utils.aoa_to_sheet(expensesData);
+    wsExpenses["!cols"] = [
+      { wch: 25 },
+      { wch: 12 },
+      { wch: 10 },
+      { wch: 10 },
+      { wch: 10 },
+      { wch: 15 },
+    ];
+    XLSX.utils.book_append_sheet(wb, wsExpenses, "Dépenses");
+
+    // Feuille Résumé
+    const summaryData = [
+      ["RÉSUMÉ - " + eventName],
+      [],
+      ["Recettes Billetterie", stats.ticketRevenue],
+      ["Autres Recettes", stats.otherRevenue],
+      ["Total Recettes", stats.totalRevenue],
+      [],
+      ["Total Dépenses", stats.totalExpenses],
+      [],
+      ["Solde", stats.balance],
+      ["Marge (%)", stats.marginRate.toFixed(1) + "%"],
+      [],
+      ["Participants", stats.totalAttendees],
+      ["Seuil de rentabilité", stats.breakEvenTickets ?? "N/A"],
+    ];
+    const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
+    wsSummary["!cols"] = [{ wch: 25 }, { wch: 15 }];
+    XLSX.utils.book_append_sheet(wb, wsSummary, "Résumé");
+
+    XLSX.writeFile(
+      wb,
+      `${eventName.replaceAll(/[^a-zA-Z0-9]/g, "_")}_budget.xlsx`,
+    );
+  }, [eventName, tickets, revenues, expenses, stats, vatRate]);
+
+  // Export PDF
+  const exportToPdf = useCallback(async () => {
+    const pdfDoc = await PDFDocument.create();
+    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+    const page = pdfDoc.addPage([595.28, 841.89]);
+    const { height } = page.getSize();
+    let y = height - 50;
+
+    // Sanitize text for WinAnsi encoding (replace special Unicode spaces)
+    const sanitize = (text: string) =>
+      text.replaceAll(/[\u00A0\u202F\u2009]/g, " ");
+
+    const drawText = (
+      text: string,
+      x: number,
+      yPos: number,
+      size = 10,
+      bold = false,
+    ) => {
+      page.drawText(sanitize(text), {
+        x,
+        y: yPos,
+        size,
+        font: bold ? fontBold : font,
+        color: rgb(0, 0, 0),
+      });
+    };
+
+    drawText(eventName, 50, y, 18, true);
+    y -= 30;
+
+    drawText("RÉSUMÉ", 50, y, 14, true);
+    y -= 20;
+    drawText(`Total Recettes: ${formatCurrency(stats.totalRevenue)}`, 50, y);
+    y -= 15;
+    drawText(`Total Dépenses: ${formatCurrency(stats.totalExpenses)}`, 50, y);
+    y -= 15;
+    drawText(`Solde: ${formatCurrency(stats.balance)}`, 50, y, 12, true);
+    y -= 15;
+    drawText(`Marge: ${stats.marginRate.toFixed(1)}%`, 50, y);
+    y -= 15;
+    drawText(`Participants: ${stats.totalAttendees}`, 50, y);
+    y -= 30;
+
+    drawText("BILLETTERIE", 50, y, 14, true);
+    y -= 20;
+    for (const ticket of tickets) {
+      if (ticket.quantity > 0 || ticket.price > 0) {
+        drawText(
+          `${ticket.name || "Billet"}: ${ticket.quantity} x ${formatCurrency(ticket.price)} = ${formatCurrency(ticket.price * ticket.quantity)}`,
+          50,
+          y,
+        );
+        y -= 15;
+      }
+    }
+    drawText(`Total: ${formatCurrency(stats.ticketRevenue)}`, 50, y, 10, true);
+    y -= 30;
+
+    drawText("AUTRES RECETTES", 50, y, 14, true);
+    y -= 20;
+    for (const rev of revenues) {
+      if (rev.amount > 0) {
+        const amountTTC = toTTC(rev.amount, rev.isHT);
+        const effectiveCount = rev.personCount ?? stats.totalAttendees;
+        const total = rev.perPerson ? amountTTC * effectiveCount : amountTTC;
+        drawText(
+          `${rev.label}: ${formatCurrency(total)}${rev.isHT ? " (HT→TTC)" : ""}${rev.perPerson ? ` (${effectiveCount} pers.)` : ""}`,
+          50,
+          y,
+        );
+        y -= 15;
+      }
+    }
+    drawText(`Total: ${formatCurrency(stats.otherRevenue)}`, 50, y, 10, true);
+    y -= 30;
+
+    drawText("DÉPENSES", 50, y, 14, true);
+    y -= 20;
+    for (const exp of expenses) {
+      if (exp.amount > 0) {
+        const amountTTC = toTTC(exp.amount, exp.isHT);
+        const effectiveCount = exp.personCount ?? stats.totalAttendees;
+        const total = exp.perPerson ? amountTTC * effectiveCount : amountTTC;
+        drawText(
+          `${exp.label}: ${formatCurrency(total)}${exp.isHT ? " (HT→TTC)" : ""}${exp.perPerson ? ` (${effectiveCount} pers.)` : ""}`,
+          50,
+          y,
+        );
+        y -= 15;
+      }
+    }
+    drawText(`Total: ${formatCurrency(stats.totalExpenses)}`, 50, y, 10, true);
+
+    const pdfBytes = await pdfDoc.save();
+    const blob = new Blob([new Uint8Array(pdfBytes)], {
+      type: "application/pdf",
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${eventName.replaceAll(/[^a-zA-Z0-9]/g, "_")}_budget.pdf`;
+    link.click();
+    URL.revokeObjectURL(url);
+  }, [eventName, tickets, revenues, expenses, stats, formatCurrency, toTTC]);
+
   // Chart colors
   const EXPENSE_COLORS = [
     "#f87171",
@@ -443,24 +706,39 @@ export function EventBudget() {
                 className="flex-1 text-base font-semibold bg-transparent outline-none"
                 placeholder="Nom de l'événement"
               />
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleShare}
-                className="shrink-0"
-              >
-                {copied ? (
-                  <>
-                    <Check className="w-3.5 h-3.5 mr-1.5 text-emerald-500" />
-                    Copié !
-                  </>
-                ) : (
-                  <>
-                    <Share2 className="w-3.5 h-3.5 mr-1.5" />
-                    Partager
-                  </>
-                )}
-              </Button>
+              <div className="flex items-center gap-1 shrink-0">
+                <Button variant="outline" size="sm" onClick={handleShare}>
+                  {copied ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 mr-1.5 text-emerald-500" />
+                      Copié !
+                    </>
+                  ) : (
+                    <>
+                      <Share2 className="w-3.5 h-3.5 mr-1.5" />
+                      Partager
+                    </>
+                  )}
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={exportToExcel}
+                  title="Exporter en Excel"
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5 mr-1.5 text-green-600" />
+                  Excel
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={exportToPdf}
+                  title="Exporter en PDF"
+                >
+                  <FileText className="w-3.5 h-3.5 mr-1.5 text-red-500" />
+                  PDF
+                </Button>
+              </div>
             </div>
 
             <div className="flex items-center gap-2 mb-3 text-xs">
@@ -469,7 +747,9 @@ export function EventBudget() {
                 <input
                   type="number"
                   value={vatRate}
-                  onChange={(e) => setParams({ vatRate: Number(e.target.value) || 0 })}
+                  onChange={(e) =>
+                    setParams({ vatRate: Number(e.target.value) || 0 })
+                  }
                   className="w-10 bg-transparent text-center text-[11px] font-medium outline-none"
                   min={0}
                   max={100}
