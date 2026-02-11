@@ -11,6 +11,8 @@ import {
   Cake,
   FileStack,
   PartyPopper,
+  Heart,
+  Moon,
   type LucideIcon,
 } from "lucide-react";
 
@@ -148,6 +150,27 @@ export const tools: Tool[] = [
     href: "/tools/age-calculator",
     category: "Santé",
     tags: ["âge", "anniversaire", "naissance", "temps", "statistiques"],
+  },
+  {
+    id: "sleep-calculator",
+    title: "Calculateur de Sommeil",
+    description:
+      "Calculez vos heures de coucher et de réveil optimales basées sur les cycles de sommeil",
+    icon: Moon,
+    href: "/tools/sleep-calculator",
+    category: "Santé",
+    tags: ["sommeil", "réveil", "coucher", "cycles", "repos", "sleep"],
+  },
+  // Fun
+  {
+    id: "love-compatibility",
+    title: "Compatibilité Amoureuse",
+    description:
+      "Testez votre compatibilité amoureuse avec votre crush",
+    icon: Heart,
+    href: "/tools/love-compatibility",
+    category: "Fun",
+    tags: ["amour", "compatibilité", "couple", "crush", "love", "test"],
   },
 ];
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { useQueryStates, parseAsString, parseAsInteger } from "nuqs";
+import { useQueryStates, parseAsString, parseAsInteger, createParser } from "nuqs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
@@ -18,6 +18,18 @@ import {
   type IncomeData,
 } from "./income-section";
 import { DebtRatioIndicator } from "./debt-ratio-indicator";
+
+// Parser personnalisé pour les tableaux de strings
+const parseAsStringArray = createParser({
+  parse: (value) => {
+    if (!value) return [];
+    return value.split(",").filter(Boolean);
+  },
+  serialize: (value) => {
+    if (!value || value.length === 0) return "";
+    return value.join(",");
+  },
+}).withDefault([]);
 
 interface MortgageResult {
   monthlyPayment: number;
@@ -37,7 +49,8 @@ export function MortgageCalculator() {
     salary1: parseAsString.withDefault("2500"),
     salary2: parseAsString.withDefault(""),
     otherIncome: parseAsString.withDefault(""),
-    existingLoans: parseAsString.withDefault(""),
+    existingLoans: parseAsStringArray,
+    incomeType: parseAsString.withDefault("monthly"),
   }, { history: "replace" });
 
   const { amount, duration, rate, insuranceRate } = params;
@@ -47,6 +60,7 @@ export function MortgageCalculator() {
     salary2: params.salary2,
     otherIncome: params.otherIncome,
     existingLoans: params.existingLoans,
+    incomeType: (params.incomeType === "annual" ? "annual" : "monthly") as "monthly" | "annual",
   };
 
   const setIncome = (newIncome: IncomeData) => {
@@ -55,6 +69,7 @@ export function MortgageCalculator() {
       salary2: newIncome.salary2,
       otherIncome: newIncome.otherIncome,
       existingLoans: newIncome.existingLoans,
+      incomeType: newIncome.incomeType,
     });
   };
 
@@ -67,18 +82,29 @@ export function MortgageCalculator() {
     const annualRate = Number.parseFloat(rate) || 0;
     const annualInsurance = Number.parseFloat(insuranceRate) || 0;
 
-    if (principal <= 0 || years <= 0 || annualRate <= 0) return null;
+    if (principal <= 0 || years <= 0 || annualRate < 0) return null;
 
     const monthlyRate = annualRate / 100 / 12;
     const numberOfPayments = years * 12;
 
     // Formule de calcul de la mensualité
-    const monthlyPayment =
-      (principal * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) /
-      (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+    let monthlyPayment: number;
+    let totalPayment: number;
+    let totalInterest: number;
 
-    const totalPayment = monthlyPayment * numberOfPayments;
-    const totalInterest = totalPayment - principal;
+    if (annualRate === 0) {
+      // Cas spécial : taux à 0% (prêt sans intérêt)
+      monthlyPayment = principal / numberOfPayments;
+      totalPayment = principal;
+      totalInterest = 0;
+    } else {
+      // Formule standard avec intérêts
+      monthlyPayment =
+        (principal * monthlyRate * Math.pow(1 + monthlyRate, numberOfPayments)) /
+        (Math.pow(1 + monthlyRate, numberOfPayments) - 1);
+      totalPayment = monthlyPayment * numberOfPayments;
+      totalInterest = totalPayment - principal;
+    }
 
     // Assurance (calculée sur le capital initial)
     const monthlyInsurance = (principal * (annualInsurance / 100)) / 12;
@@ -143,19 +169,19 @@ export function MortgageCalculator() {
             </InputGroup>
             <Slider
               value={[
-                Math.min(Math.max(Number(amount) || 50_000, 50_000), 1_000_000),
+                Math.min(Math.max(Number(amount) || 0, 0), 1_000_000),
               ]}
               onValueChange={(v) => {
                 const val = Array.isArray(v) ? v[0] : v;
                 setParams({ amount: val.toString() });
               }}
-              min={50_000}
+              min={0}
               max={1_000_000}
               step={10_000}
               className="mt-3"
             />
             <div className="flex justify-between text-xs text-neutral-400 mt-1">
-              <span>50k</span>
+              <span>0</span>
               <span>1M</span>
             </div>
           </div>
@@ -178,18 +204,18 @@ export function MortgageCalculator() {
               />
             </InputGroup>
             <Slider
-              value={[Math.min(Math.max(duration || 5, 5), 30)]}
+              value={[Math.min(Math.max(duration || 0, 0), 30)]}
               onValueChange={(v) => {
                 const val = Array.isArray(v) ? v[0] : v;
                 setParams({ duration: val });
               }}
-              min={5}
+              min={0}
               max={30}
               step={1}
               className="mt-3"
             />
             <div className="flex justify-between text-xs text-neutral-400 mt-1">
-              <span>5 ans</span>
+              <span>0 an</span>
               <span>30 ans</span>
             </div>
           </div>

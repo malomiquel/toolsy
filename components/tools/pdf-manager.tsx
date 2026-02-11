@@ -48,7 +48,7 @@ const FEATURES = [
       "Réduisez la taille de vos images tout en conservant une bonne qualité. Optimisez pour le web.",
     icon: FileImage,
     href: "/tools/pdf-manager/compress",
-    available: false,
+    available: true,
   },
 ] as const;
 

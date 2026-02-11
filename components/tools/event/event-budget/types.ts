@@ -43,6 +43,32 @@ export type ExpenseItem = {
   isHT?: boolean; // If true, amount is HT and will be converted to TTC
   iconKey: string;
   isDefault?: boolean;
+  category?: string; // Category name for grouping expenses
+};
+
+export type ExpenseCategory = {
+  id: string;
+  name: string;
+  color: string; // Color for visual identification
+};
+
+export type BudgetStats = {
+  totalAttendees: number;
+  maxCapacity: number;
+  ticketRevenue: number;
+  otherRevenue: number;
+  totalRevenue: number;
+  totalExpenses: number;
+  fixedExpenses: number;
+  variableCostPerPerson: number;
+  balance: number;
+  marginRate: number;
+  costPerPerson: number;
+  revenuePerPerson: number;
+  avgTicketPrice: number;
+  breakEvenTickets: number | null;
+  marginPerTicket: number;
+  breakEvenReachable: boolean;
 };
 
 // --- Icon mapping ---
@@ -99,6 +125,15 @@ export const DEFAULT_REVENUES: RevenueItem[] = [
   },
 ];
 
+export const DEFAULT_CATEGORIES: ExpenseCategory[] = [
+  { id: "cat-venue", name: "Lieu", color: "#3b82f6" },
+  { id: "cat-services", name: "Services", color: "#8b5cf6" },
+  { id: "cat-food", name: "Nourriture & Boissons", color: "#f59e0b" },
+  { id: "cat-marketing", name: "Marketing", color: "#ec4899" },
+  { id: "cat-staff", name: "Personnel", color: "#10b981" },
+  { id: "cat-other", name: "Autres", color: "#6b7280" },
+];
+
 export const DEFAULT_EXPENSES: ExpenseItem[] = [
   {
     id: "expense-0",
@@ -107,6 +142,7 @@ export const DEFAULT_EXPENSES: ExpenseItem[] = [
     perPerson: false,
     iconKey: "mappin",
     isDefault: true,
+    category: "cat-venue",
   },
   {
     id: "expense-1",
@@ -115,6 +151,7 @@ export const DEFAULT_EXPENSES: ExpenseItem[] = [
     perPerson: false,
     iconKey: "speaker",
     isDefault: true,
+    category: "cat-services",
   },
   {
     id: "expense-2",
@@ -123,6 +160,7 @@ export const DEFAULT_EXPENSES: ExpenseItem[] = [
     perPerson: false,
     iconKey: "sparkles",
     isDefault: true,
+    category: "cat-services",
   },
   {
     id: "expense-3",
@@ -131,6 +169,7 @@ export const DEFAULT_EXPENSES: ExpenseItem[] = [
     perPerson: true,
     iconKey: "utensils",
     isDefault: true,
+    category: "cat-food",
   },
   {
     id: "expense-4",
@@ -139,6 +178,7 @@ export const DEFAULT_EXPENSES: ExpenseItem[] = [
     perPerson: false,
     iconKey: "megaphone",
     isDefault: true,
+    category: "cat-marketing",
   },
   {
     id: "expense-5",
@@ -147,6 +187,7 @@ export const DEFAULT_EXPENSES: ExpenseItem[] = [
     perPerson: false,
     iconKey: "users",
     isDefault: true,
+    category: "cat-staff",
   },
   {
     id: "expense-6",
@@ -155,6 +196,7 @@ export const DEFAULT_EXPENSES: ExpenseItem[] = [
     perPerson: false,
     iconKey: "truck",
     isDefault: true,
+    category: "cat-other",
   },
   {
     id: "expense-7",
@@ -163,5 +205,6 @@ export const DEFAULT_EXPENSES: ExpenseItem[] = [
     perPerson: false,
     iconKey: "shield",
     isDefault: true,
+    category: "cat-staff",
   },
 ];

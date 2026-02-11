@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { ExpenseItem, ICON_MAP } from "./types";
-import { Euro, Lock, MoreHorizontal, Trash2, Users } from "lucide-react";
+import { ExpenseItem, RevenueItem, ExpenseCategory, ICON_MAP } from "./types";
+import { Coins, Euro, Lock, MoreHorizontal, Trash2, Users } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
   InputGroup,
@@ -10,29 +10,66 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button";
+import { CategorySelector } from "./category-selector";
 
-interface ExpenseRowProps {
-  item: ExpenseItem;
+type BudgetRowBaseProps = {
+  item: ExpenseItem | RevenueItem;
   totalAttendees: number;
   vatRate: number;
   isEditing?: boolean;
-  onUpdate: (field: "amount" | "perPerson" | "personCount" | "isHT", value: number | boolean | undefined) => void;
+  onUpdate: (
+    field: "amount" | "perPerson" | "personCount" | "isHT",
+    value: number | boolean | undefined,
+  ) => void;
   onRemove?: () => void;
   onLabelChange?: (label: string) => void;
   onEditingChange?: (editing: boolean) => void;
-}
+};
 
-export function ExpenseRow({
-  item,
-  totalAttendees,
-  vatRate,
-  isEditing,
-  onUpdate,
-  onRemove,
-  onLabelChange,
-  onEditingChange,
-}: ExpenseRowProps) {
-  const Icon = ICON_MAP[item.iconKey] || MoreHorizontal;
+type ExpenseRowProps = BudgetRowBaseProps & {
+  variant: "expense";
+  categories: ExpenseCategory[];
+  onCategoryChange?: (categoryId: string | null | undefined) => void;
+};
+
+type RevenueRowProps = BudgetRowBaseProps & {
+  variant: "revenue";
+};
+
+type BudgetRowProps = ExpenseRowProps | RevenueRowProps;
+
+const VARIANT_CONFIG = {
+  expense: {
+    defaultIcon: MoreHorizontal,
+    perPersonColor: "text-blue-600",
+    totalColor: "text-red-500",
+    fixedTitle: "Coût fixe total",
+    perPersonTitle: "Coût par personne",
+  },
+  revenue: {
+    defaultIcon: Coins,
+    perPersonColor: "text-emerald-600",
+    totalColor: "text-emerald-600",
+    fixedTitle: "Montant fixe total",
+    perPersonTitle: "Montant par personne",
+  },
+} as const;
+
+export function BudgetRow(props: BudgetRowProps) {
+  const {
+    item,
+    totalAttendees,
+    vatRate,
+    isEditing,
+    onUpdate,
+    onRemove,
+    onLabelChange,
+    onEditingChange,
+    variant,
+  } = props;
+
+  const config = VARIANT_CONFIG[variant];
+  const Icon = ICON_MAP[item.iconKey] || config.defaultIcon;
   const effectivePersonCount = item.personCount ?? totalAttendees;
   const amountTTC = item.isHT ? item.amount * (1 + vatRate / 100) : item.amount;
   const calculatedTotal = item.perPerson
@@ -58,7 +95,10 @@ export function ExpenseRow({
           ref={inputRef}
           type="text"
           value={item.label}
-          onChange={(e) => onLabelChange?.(e.target.value)}
+          onChange={(e) => {
+            if (!isEditing) onEditingChange?.(true);
+            onLabelChange?.(e.target.value);
+          }}
           onBlur={() => onEditingChange?.(false)}
           onKeyDown={(e) => e.key === "Enter" && onEditingChange?.(false)}
           placeholder="Libellé..."
@@ -74,6 +114,18 @@ export function ExpenseRow({
         </button>
       )}
 
+      {variant === "expense" && (
+        <CategorySelector
+          categories={props.categories}
+          selectedCategoryId={(item as ExpenseItem).category}
+          onSelect={(categoryId) =>
+            props.onCategoryChange?.(
+              categoryId === "none" ? undefined : categoryId,
+            )
+          }
+        />
+      )}
+
       <div className="shrink-0 flex h-7 rounded-lg bg-neutral-100 p-0.5">
         <button
           type="button"
@@ -83,7 +135,7 @@ export function ExpenseRow({
               ? "bg-white text-neutral-700 shadow-sm"
               : "text-neutral-400 hover:text-neutral-600"
           }`}
-          title="Coût fixe total"
+          title={config.fixedTitle}
         >
           <Lock className="w-3 h-3" />
           Fixe
@@ -93,10 +145,10 @@ export function ExpenseRow({
           onClick={() => onUpdate("perPerson", true)}
           className={`flex items-center gap-1 px-2 rounded-md text-[11px] font-medium transition-all ${
             item.perPerson
-              ? "bg-white text-blue-600 shadow-sm"
+              ? `bg-white ${config.perPersonColor} shadow-sm`
               : "text-neutral-400 hover:text-neutral-600"
           }`}
-          title="Coût par personne"
+          title={config.perPersonTitle}
         >
           <Users className="w-3 h-3" />
           /pers
@@ -139,14 +191,19 @@ export function ExpenseRow({
               value={item.personCount ?? ""}
               onChange={(e) => {
                 const val = e.target.value;
-                onUpdate("personCount", val === "" ? undefined : Number(val) || 0);
+                onUpdate(
+                  "personCount",
+                  val === "" ? undefined : Number(val) || 0,
+                );
               }}
               placeholder={String(totalAttendees)}
             />
           </InputGroup>
           <div className="w-16 text-right shrink-0">
             <span className="text-[10px] text-neutral-400">= </span>
-            <span className="text-xs font-semibold text-red-500 tabular-nums">
+            <span
+              className={`text-xs font-semibold tabular-nums ${config.totalColor}`}
+            >
               {calculatedTotal.toLocaleString("fr-FR")} €
             </span>
           </div>
